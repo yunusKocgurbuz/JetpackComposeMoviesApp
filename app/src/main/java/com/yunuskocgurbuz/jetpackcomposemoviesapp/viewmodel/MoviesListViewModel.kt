@@ -3,7 +3,7 @@ package com.yunuskocgurbuz.jetpackcomposemoviesapp.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yunuskocgurbuz.jetpackcomposemoviesapp.model.ResultMovie
+import com.yunuskocgurbuz.jetpackcomposemoviesapp.model.movieslistmodel.ResultMovie
 import com.yunuskocgurbuz.jetpackcomposemoviesapp.repository.MoviesRepository
 import com.yunuskocgurbuz.jetpackcomposemoviesapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

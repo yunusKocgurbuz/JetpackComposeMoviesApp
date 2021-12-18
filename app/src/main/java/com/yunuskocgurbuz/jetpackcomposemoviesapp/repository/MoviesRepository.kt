@@ -1,6 +1,7 @@
 package com.yunuskocgurbuz.jetpackcomposemoviesapp.repository
 
-import com.yunuskocgurbuz.jetpackcomposemoviesapp.model.MoviesList
+import com.yunuskocgurbuz.jetpackcomposemoviesapp.model.moviesdetailmodel.MoviesDetailList
+import com.yunuskocgurbuz.jetpackcomposemoviesapp.model.movieslistmodel.MoviesList
 import com.yunuskocgurbuz.jetpackcomposemoviesapp.service.MoviesAPI
 import com.yunuskocgurbuz.jetpackcomposemoviesapp.util.Constants.API_KEY
 import com.yunuskocgurbuz.jetpackcomposemoviesapp.util.Resource
@@ -27,6 +28,19 @@ class MoviesRepository @Inject constructor(
     suspend fun getNowplayingList(): Resource<MoviesList>{
         val response = try {
             api.getNowplayingList(API_KEY)
+
+        }catch (e: Exception){
+
+            return Resource.Error("Error API connect!")
+        }
+
+
+        return Resource.Success(response)
+    }
+
+    suspend fun getMovieDetail(id: String): Resource<MoviesDetailList>{
+        val response = try {
+            api.getMovieDetail(id,  API_KEY)
 
         }catch (e: Exception){
 

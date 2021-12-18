@@ -1,4 +1,4 @@
-package com.yunuskocgurbuz.jetpackcomposemoviesapp.model
+package com.yunuskocgurbuz.jetpackcomposemoviesapp.model.movieslistmodel
 
 data class ResultMovie(
     val adult: Boolean,

@@ -3,16 +3,15 @@ package com.yunuskocgurbuz.jetpackcomposemoviesapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.*
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.yunuskocgurbuz.jetpackcomposemoviesapp.ui.theme.JetpackComposeMoviesAppTheme
+import com.yunuskocgurbuz.jetpackcomposemoviesapp.view.MovieDetailScreen
 import com.yunuskocgurbuz.jetpackcomposemoviesapp.view.MoviesListScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,6 +30,18 @@ class MainActivity : ComponentActivity() {
                     composable("movies_list_screen"){
                         //NewsListScreen
                         MoviesListScreen(navController = navController)
+                    }
+
+                    composable("movie_detail_screen/{movie_id}", arguments = listOf(
+                        navArgument("movie_id"){
+                            type = NavType.StringType
+                        }
+                    )){
+                        val movie_id = remember {
+                            it.arguments?.getString("movie_id")
+                        }
+
+                        MovieDetailScreen(id = movie_id ?: "")
                     }
 
                 }

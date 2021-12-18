@@ -23,7 +23,7 @@ import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.yunuskocgurbuz.jetpackcomposemoviesapp.model.ResultMovie
+import com.yunuskocgurbuz.jetpackcomposemoviesapp.model.movieslistmodel.ResultMovie
 import com.yunuskocgurbuz.jetpackcomposemoviesapp.viewmodel.MoviesListViewModel
 import kotlinx.coroutines.delay
 
@@ -95,7 +95,7 @@ fun SwipeRefreshCompose(movies: List<ResultMovie>, navController: NavController)
 
                 //now playing, a slider on top of the screen,
                 item{
-                    ViewPagerSlider()
+                    ViewPagerSlider(navController = navController)
                 }
 
                 //upcoming
@@ -117,7 +117,7 @@ fun MoviesRow(navController: NavController, movie: ResultMovie) {
             .padding(2.dp)
             .clickable {
                 navController.navigate(
-                    "news_detail_screen"
+                    "movie_detail_screen/${movie.id}"
                 )
             },
         backgroundColor = Color.LightGray,

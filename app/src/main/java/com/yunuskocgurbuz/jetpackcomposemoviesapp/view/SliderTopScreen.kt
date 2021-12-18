@@ -3,9 +3,9 @@ package com.yunuskocgurbuz.jetpackcomposemoviesapp.view
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -18,9 +18,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.*
-import com.yunuskocgurbuz.jetpackcomposemoviesapp.model.ResultMovie
+import com.yunuskocgurbuz.jetpackcomposemoviesapp.model.movieslistmodel.ResultMovie
 import com.yunuskocgurbuz.jetpackcomposemoviesapp.viewmodel.NowplayingListViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
@@ -29,7 +30,10 @@ import kotlin.math.absoluteValue
 
 @ExperimentalPagerApi
 @Composable
-fun ViewPagerSlider(viewModel: NowplayingListViewModel = hiltViewModel()) {
+fun ViewPagerSlider(
+    navController: NavController,
+    viewModel: NowplayingListViewModel = hiltViewModel()
+) {
 
     val moviesList by remember { viewModel.moviesList }
 
@@ -67,6 +71,8 @@ fun ViewPagerSlider(viewModel: NowplayingListViewModel = hiltViewModel()) {
                 modifier = Modifier
                     .weight(1f)
             ) { page ->
+
+                val movie = nowplayingMovies[page]
                 Card(modifier = Modifier
                     .graphicsLayer {
                         val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
@@ -88,9 +94,13 @@ fun ViewPagerSlider(viewModel: NowplayingListViewModel = hiltViewModel()) {
 
                     }
                     .fillMaxWidth()
+                    .clickable {
+                        navController.navigate(
+                            "movie_detail_screen/${movie.id}"
+                        )
+                    }
                 ) {
 
-                    val movie = nowplayingMovies[page]
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -126,18 +136,17 @@ fun ViewPagerSlider(viewModel: NowplayingListViewModel = hiltViewModel()) {
                                 fontWeight = FontWeight.Normal,
                                 modifier = Modifier.padding(0.dp, 8.dp, 0.dp, 0.dp)
                             )
-                            //Horizontal dot indicator
-                            HorizontalPagerIndicator(
-                                pagerState = pagerState, modifier = Modifier
-                                    .align(Alignment.CenterHorizontally)
-
-
-                            )
-
                         }
                     }
                 }
             }
+            //Horizontal dot indicator
+            HorizontalPagerIndicator(
+                pagerState = pagerState,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(3.dp)
+            )
         }
     }
 }

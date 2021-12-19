@@ -1,6 +1,8 @@
 package com.yunuskocgurbuz.jetpackcomposemoviesapp.view
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,16 +26,24 @@ import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.yunuskocgurbuz.jetpackcomposemoviesapp.R
 import com.yunuskocgurbuz.jetpackcomposemoviesapp.model.movieslistmodel.ResultMovie
+import com.yunuskocgurbuz.jetpackcomposemoviesapp.util.ConnectionState
+import com.yunuskocgurbuz.jetpackcomposemoviesapp.util.connectivityState
+import com.yunuskocgurbuz.jetpackcomposemoviesapp.viewmodel.MovieDetailViewModel
 import com.yunuskocgurbuz.jetpackcomposemoviesapp.viewmodel.MoviesListViewModel
+import com.yunuskocgurbuz.jetpackcomposemoviesapp.viewmodel.NowplayingListViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 
 
+@ExperimentalAnimationApi
 @ExperimentalPagerApi
 @Composable
 fun MoviesListScreen(
     navController: NavController,
-    viewModel: MoviesListViewModel = hiltViewModel()
+    viewModel: MoviesListViewModel = hiltViewModel(),
+    viewModelNowplaying: NowplayingListViewModel = hiltViewModel()
 ) {
 
     Surface(
@@ -40,7 +51,7 @@ fun MoviesListScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         Column {
-
+            ConnectivityStatus(viewModel = viewModel, viewModelNowplaying)
             MoviesList(navController = navController)
         }
     }
@@ -176,6 +187,72 @@ fun RetryView(
         Spacer(modifier = Modifier.height(10.dp))
         Button(onClick = { onRetry }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Text(text = "Retry")
+        }
+    }
+}
+
+@Composable
+fun ConnectivityStatusBox(
+    isConnected: Boolean
+) {
+    val backgroundColor by animateColorAsState(targetValue = if (isConnected) Color.Green else Color.Red)
+    val message = if (isConnected) "Back Online!" else "No Internet Connection!"
+    val iconResource = if (isConnected) {
+        R.drawable.ic_connectivity_available
+    } else {
+        R.drawable.ic_connectivity_unavailable
+    }
+    Box(
+        modifier = Modifier
+            .background(backgroundColor)
+            .fillMaxWidth()
+            .padding(8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(id = iconResource),
+                contentDescription = "Connection Image",
+                tint = Color.White
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(
+                text = message,
+                color = Color.White,
+                fontSize = 15.sp
+            )
+        }
+    }
+}
+
+@ExperimentalAnimationApi
+@ExperimentalCoroutinesApi
+@Composable
+fun ConnectivityStatus(viewModel: MoviesListViewModel, viewModelNowplaying: NowplayingListViewModel) {
+    val connection by connectivityState()
+    val isConnected = connection == ConnectionState.Available
+    var visibility by remember { mutableStateOf(false) }
+
+    AnimatedVisibility(
+        visible = visibility,
+        enter = expandVertically(),
+        exit = shrinkVertically()
+    ) {
+        ConnectivityStatusBox(isConnected = isConnected)
+    }
+
+    LaunchedEffect(isConnected) {
+
+        visibility = if (!isConnected) {
+
+            true
+        } else {
+            viewModel.loadMovies()
+            viewModelNowplaying.loadNowplayingMovies()
+            delay(2000)
+            false
         }
     }
 }

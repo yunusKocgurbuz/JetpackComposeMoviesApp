@@ -6,3 +6,4 @@ Main Features
 4- Hilt
 5- Navigation Components
 6- Retrofit2
+7- API

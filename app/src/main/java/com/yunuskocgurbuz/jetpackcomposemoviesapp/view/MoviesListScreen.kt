@@ -41,9 +41,7 @@ import kotlinx.coroutines.delay
 @ExperimentalPagerApi
 @Composable
 fun MoviesListScreen(
-    navController: NavController,
-    viewModel: MoviesListViewModel = hiltViewModel(),
-    viewModelNowplaying: NowplayingListViewModel = hiltViewModel()
+    navController: NavController
 ) {
 
     Surface(
@@ -51,7 +49,7 @@ fun MoviesListScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         Column {
-            ConnectivityStatus(viewModel = viewModel, viewModelNowplaying)
+            ConnectivityStatus()
             MoviesList(navController = navController)
         }
     }
@@ -63,9 +61,6 @@ fun MoviesList(navController: NavController, viewModel: MoviesListViewModel = hi
     val moviesList by remember { viewModel.moviesList }
     val errorMessage by remember { viewModel.errorMessage }
     val isLoading by remember { viewModel.isLoading }
-
-    SwipeRefreshCompose(moviesList, navController = navController)
-
 
     Box(
         contentAlignment = Alignment.Center,
@@ -80,6 +75,8 @@ fun MoviesList(navController: NavController, viewModel: MoviesListViewModel = hi
             }
         }
     }
+
+    SwipeRefreshCompose(moviesList, navController = navController)
 }
 
 
@@ -230,7 +227,7 @@ fun ConnectivityStatusBox(
 @ExperimentalAnimationApi
 @ExperimentalCoroutinesApi
 @Composable
-fun ConnectivityStatus(viewModel: MoviesListViewModel, viewModelNowplaying: NowplayingListViewModel) {
+fun ConnectivityStatus() {
     val connection by connectivityState()
     val isConnected = connection == ConnectionState.Available
     var visibility by remember { mutableStateOf(false) }
@@ -246,11 +243,8 @@ fun ConnectivityStatus(viewModel: MoviesListViewModel, viewModelNowplaying: Nowp
     LaunchedEffect(isConnected) {
 
         visibility = if (!isConnected) {
-
             true
         } else {
-            viewModel.loadMovies()
-            viewModelNowplaying.loadNowplayingMovies()
             delay(2000)
             false
         }

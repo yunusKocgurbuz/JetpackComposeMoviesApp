@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController =  navController, startDestination = "movies_list_screen"){
 
                     composable("movies_list_screen"){
-                        //NewsListScreen
+
                         MoviesListScreen(navController = navController)
                     }
 

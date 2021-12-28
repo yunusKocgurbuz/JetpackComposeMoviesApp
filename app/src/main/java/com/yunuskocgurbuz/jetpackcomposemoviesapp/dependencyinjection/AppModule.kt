@@ -17,13 +17,13 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideNewsRepository(
+    fun provideMoviesRepository(
         api: MoviesAPI
     ) = MoviesRepository(api)
 
     @Singleton
     @Provides
-    fun provideNewsApi(): MoviesAPI {
+    fun provideMoviesApi(): MoviesAPI {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
